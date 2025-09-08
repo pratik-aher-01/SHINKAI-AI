@@ -1,13 +1,24 @@
-// server.js
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 dotenv.config();
 const app = express();
+
+// Enable CORS for all origins (frontend on Vercel can access)
+app.use(cors());
+
+// Parse JSON requests
 app.use(express.json());
 
+// Initialize Google Generative AI
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+// Test route to check backend
+app.get("/", (req, res) => {
+  res.send("Backend is running!");
+});
 
 // POST /chat route
 app.post("/chat", async (req, res) => {
@@ -22,5 +33,6 @@ app.post("/chat", async (req, res) => {
   }
 });
 
-// Start server
-app.listen(3000, () => console.log("Server running on http://localhost:3000"));
+// Use Render port or fallback to 3000
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
